@@ -1,0 +1,25 @@
+{
+  "libraries": [
+    {
+      "maven": {
+        "coordinates": "org.mlflow:mlflow-client:0.8.0"
+      }
+    }, 
+    {
+      "pypi": {
+        "package": "mlflow"
+      }
+    }, 
+    {
+      "maven": {
+        "coordinates": "ml.combust.mleap:mleap-spark_2.11:0.12.0"
+      }
+    }, 
+    {
+      "maven": {
+        "coordinates": "ml.combust.mleap:mleap-spark-base_2.11:0.12.0"
+      }
+    }
+  ], 
+  "cluster_id": "1125-205205-racer181"
+}

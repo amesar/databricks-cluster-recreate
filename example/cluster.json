@@ -1,0 +1,21 @@
+{
+  "node_type_id": "i3.xlarge", 
+  "autotermination_minutes": 60, 
+  "spark_conf": {
+    "spark.sql.execution.arrow.enabled": "true"
+  }, 
+  "num_workers": 1, 
+  "driver_node_type_id": "i3.xlarge", 
+  "init_scripts": [
+    {
+      "dbfs": {
+        "destination": "dbfs:/doe/init_scripts/install_mlflow.sh"
+      }
+    }
+  ], 
+  "cluster_name": "doe_mlflow", 
+  "spark_env_vars": {
+    "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+  }, 
+  "spark_version": "5.0.x-scala2.11"
+}
