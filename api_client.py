@@ -1,6 +1,4 @@
 
-from __future__ import print_function
-
 class ApiClient(object):
 
     def _get_clusters(self):

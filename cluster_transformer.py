@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 import os, json
 import api_client_factory
 import lib_transformer
@@ -18,13 +18,13 @@ class ClusterTransformer(object):
     def process(self, cluster_id):
         try:
             self._process(cluster_id)
-        #except requests.exceptions.HTTPError as ex
         except Exception as ex:
             print("WARNING: cluster_id={} ex={}".format(cluster_id,ex))
 
     def _process(self, cluster_id):
         cluster = self.client.get_cluster(cluster_id)
         cluster_name = cluster['cluster_name']
+        print("Cluster: {:<20s} {}".format(cluster_id,cluster_name))
     
         dct = {}
         for k in keys:

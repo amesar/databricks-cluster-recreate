@@ -5,6 +5,7 @@ import os
 import utils
 
 lib_types = { 'maven': 'maven-coordinates', 'pypi': 'pypi-package', 'jar': 'jar', 'egg': 'egg', 'cran': 'cran'  }
+verbose = False
 
 def add_command(lib_type, lib_value):
     lib_type2 = lib_types[lib_type]
@@ -37,7 +38,7 @@ def create_path(output_dir, name, ext):
 def build_files(statuses, output_dir, output_dir2, cluster_id, which):
 
     if not 'library_statuses' in statuses:
-        print("INFO: No libraries in cluster {}".format(which))
+        if verbose: print("INFO: No libraries in cluster {}".format(which))
         return
 
     libraries = []
