@@ -16,6 +16,13 @@ class ClusterTransformer(object):
         self.duplicate_clusters = ClusterDirectoryManager()
 
     def process(self, cluster_id):
+        try:
+            self._process(cluster_id)
+        #except requests.exceptions.HTTPError as ex
+        except Exception as ex:
+            print("WARNING: cluster_id={} ex={}".format(cluster_id,ex))
+
+    def _process(self, cluster_id):
         cluster = self.client.get_cluster(cluster_id)
         cluster_name = cluster['cluster_name']
     

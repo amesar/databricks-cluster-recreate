@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser.add_argument("-U", "--user", dest="user", help="user name (creator_user_name)", required=True)
     args = parser.parse_args()
 
-    client = api_client_factory.get_api_client(args.url,args.token)
+    client = api_client_factory.get_api_client(args.profile, args.file_client_base_dir)
     clusters = client.get_clusters()
     transformer = ClusterTransformer(client, args.output_dir, args.use_cluster_name)
     count = 0
