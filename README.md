@@ -28,7 +28,7 @@ Files in a [cluster directory](example):
   * [libraries.json](example/from_api/libraries.json) - libraries/cluster-status endpoint
 response from [libraries/cluster-status endpoint](https://docs.databricks.com/api/latest/libraries.html#cluster-status).
 
-The option `use_cluster_name` determines whether directory names are cluster IDs or cluster names.
+The option `use_cluster_id` determines whether directory names are cluster IDs or cluster names. The default is to use cluster names.
 
 Since cluster names are not unique, when duplicate names occur the resulting directory name will have `__dup_{COUNT}` appended to it. For example, `cool_cluster__dup_01` and `cool_cluster__dup_02`.
 
@@ -58,12 +58,11 @@ databricks libraries install --cluster-id $cluster_id --maven-coordinates ml.com
 
 ## Sample runs
 
-By cluster IDs
+By cluster IDs (comma-separated cluster IDs):
 ```
 python cluster_snapshot_by_ids.py \
   --cluster_ids 1125-205205-racer181,1023-023159-prop147  \
   --output_dir out \
-  --use_cluster_name True \
   --profile MY_PROFILE
 ```
 
@@ -72,7 +71,6 @@ By user (i.e. creator_user_name):
 python cluster_snapshot_by_user.py \
   --user doe@databricks.com \
   --output_dir out \
-  --use_cluster_name True \
   --profile MY_PROFILE
 ```
 
@@ -80,6 +78,5 @@ All clusters:
 ```
 python cluster_snapshot_all.py \
   --output_dir out \
-  --use_cluster_name True \
   --profile MY_PROFILE
 ```

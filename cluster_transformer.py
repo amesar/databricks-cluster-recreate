@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os, json
+import sys, os, json
 import api_client_factory
 import lib_transformer
 import utils
@@ -8,10 +8,10 @@ from cluster_directory_manager import ClusterDirectoryManager
 keys = ['cluster_name', 'spark_version', 'driver_node_type_id', 'node_type_id', 'num_workers', 'autotermination_minutes', 'spark_env_vars', 'spark_conf', 'init_scripts']
 
 class ClusterTransformer(object):
-    def __init__(self, client, output_dir, use_cluster_name):
+    def __init__(self, client, output_dir, use_cluster_id):
         self.client = client
         self.output_dir = output_dir
-        self.use_cluster_name = use_cluster_name
+        self.use_cluster_id = use_cluster_id
         self.manifests = []
         self.duplicate_clusters = ClusterDirectoryManager()
 
@@ -24,14 +24,14 @@ class ClusterTransformer(object):
     def _process(self, cluster_id):
         cluster = self.client.get_cluster(cluster_id)
         cluster_name = cluster['cluster_name']
-        print("Cluster: {:<20s} {}".format(cluster_id,cluster_name))
+        sys.stdout.write("Cluster: {:<20s} {}\n".format(cluster_id,cluster_name))
     
         dct = {}
         for k in keys:
             v = cluster.get(k,None)
             if v is not None: dct[k] = v
     
-        which = cluster_name if self.use_cluster_name else cluster_id
+        which = cluster_id if self.use_cluster_id else cluster_name
         cluster_dir = self.duplicate_clusters.create_cluster_dir(self.output_dir, which)
         cluster_dir2 = os.path.join(cluster_dir,"from_api")
         os.makedirs(cluster_dir2) 

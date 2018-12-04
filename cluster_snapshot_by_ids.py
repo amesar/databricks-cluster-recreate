@@ -12,7 +12,7 @@ if __name__ == "__main__":
     cluster_ids = args.cluster_ids.split(",")
 
     client = api_client_factory.get_api_client(args.profile, args.file_client_base_dir)
-    transformer = ClusterTransformer(client, args.output_dir, args.use_cluster_name)
+    transformer = ClusterTransformer(client, args.output_dir, args.use_cluster_id)
     for cluster_id in cluster_ids:
         transformer.process(cluster_id)
     transformer.finish()

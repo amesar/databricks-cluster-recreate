@@ -1,3 +1,4 @@
+from __future__ import print_function
 from api_client import ApiClient
 from databricks_cli.sdk import api_client
 import cred_utils
@@ -6,6 +7,7 @@ class HttpApiClient(ApiClient):
 
     def __init__(self, profile=None):
         (host,token) = cred_utils.get_credentials(profile)
+        print("Host:",host)
         self.db_api = api_client.ApiClient(None, None, host, token)
 
     def get_cluster(self, cluster_id):
