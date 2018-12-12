@@ -1,4 +1,4 @@
-from __future__ import print_function
+rom __future__ import print_function
 
 import args_utils
 import api_client_factory
@@ -8,6 +8,7 @@ if __name__ == "__main__":
     parser = args_utils.build_parser()
     parser.add_argument("-U", "--user", dest="user", help="user name (creator_user_name)", required=True)
     args = parser.parse_args()
+    print("args:",args)
 
     client = api_client_factory.get_api_client(args.profile, args.file_client_base_dir)
     clusters = client.get_clusters()
