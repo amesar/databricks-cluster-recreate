@@ -71,7 +71,8 @@ By user (i.e. creator_user_name):
 python cluster_snapshot_by_user.py \
   --user doe@databricks.com \
   --output_dir out \
-  --profile MY_PROFILE
+  --profile MY_PROFILE \
+  --exclude job-
 ```
 
 All clusters:
