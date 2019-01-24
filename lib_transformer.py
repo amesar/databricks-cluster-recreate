@@ -4,13 +4,16 @@ import json
 import os
 import utils
 
-lib_types = { 'maven': 'maven-coordinates', 'pypi': 'pypi-package', 'jar': 'jar', 'egg': 'egg', 'cran': 'cran'  }
+lib_types = { 'maven': 'maven-coordinates', 'pypi': 'pypi-package', 'jar': 'jar', 'egg': 'egg', 'cran': 'cran-package'  }
 verbose = False
 
 def add_command(lib_type, lib_value):
     lib_type2 = lib_types[lib_type]
+    print(">> lib_type:",lib_type,"lib_value:",lib_value)
     if lib_type == 'jar' or lib_type == 'egg':
         lib = lib_value
+    elif lib_type == 'cran':
+        lib = lib_value['package']
     else:
         k = lib_value.keys()[0]  
         lib = lib_value[k]
