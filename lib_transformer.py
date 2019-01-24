@@ -9,7 +9,6 @@ verbose = False
 
 def add_command(lib_type, lib_value):
     lib_type2 = lib_types[lib_type]
-    print(">> lib_type:",lib_type,"lib_value:",lib_value)
     if lib_type == 'jar' or lib_type == 'egg':
         lib = lib_value
     elif lib_type == 'cran':
