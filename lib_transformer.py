@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import json
 import os
 import utils
@@ -15,7 +13,7 @@ def add_command(lib_type, lib_value):
     elif lib_type == 'cran':
         lib = lib_value['package']
     else:
-        k = lib_value.keys()[0]  
+        k = list(lib_value.keys())[0]  
         lib = lib_value[k]
     return "databricks libraries install --cluster-id $cluster_id --{} {}".format(lib_type2,lib)
 
@@ -48,7 +46,7 @@ def build_files(statuses, output_dir, output_dir2, cluster_id, which):
     commands = []
     for lib in statuses['library_statuses']:
         lib = lib['library']
-        k = lib.keys()[0]  
+        k = list(lib.keys())[0]  
         v = lib[k]
         libraries.append({k:v})
         commands.append(add_command(k,v))

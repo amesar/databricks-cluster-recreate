@@ -1,4 +1,3 @@
-from __future__ import print_function
 import sys, os, json
 import api_client_factory
 import lib_transformer

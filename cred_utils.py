@@ -1,4 +1,3 @@
-
 from databricks_cli.sdk import api_client
 from databricks_cli.configure import provider
 

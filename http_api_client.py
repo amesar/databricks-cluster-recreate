@@ -1,4 +1,3 @@
-from __future__ import print_function
 from api_client import ApiClient
 from databricks_cli.sdk import api_client
 import cred_utils
