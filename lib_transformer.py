@@ -26,8 +26,11 @@ def build_command_file(opath2, cluster_id, cmds):
         f.write("  exit 1\n")
         f.write("  fi\n")
         f.write("cluster_id=$1\n\n")
+        f.write("if [ $# -gt 1 ] ; then\n")
+        f.write('  PROFILE="--profile $2"\n')
+        f.write("fi\n")
         for cmd in cmds:
-            f.write(cmd+"\n")
+            f.write(cmd+" $PROFILE\n")
     utils.chmod_x(opath2)
 
 def create_path(output_dir, name, ext):

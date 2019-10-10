@@ -57,7 +57,10 @@ class ClusterTransformer(object):
         opath = os.path.join(cluster_dir,"create_cluster.sh")
         with open(opath, 'w') as f:
             f.write("\n# Create cluster\n\n")
-            f.write("databricks clusters create --json-file cluster.json\n")
+            f.write("if [ $# -gt 0 ] ; then\n")
+            f.write('  PROFILE="--profile $1"\n')
+            f.write("fi\n")
+            f.write("databricks clusters create --json-file cluster.json $PROFILE\n")
         utils.chmod_x(opath)
     
         # -- Write manifest file
