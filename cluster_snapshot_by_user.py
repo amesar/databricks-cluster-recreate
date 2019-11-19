@@ -8,7 +8,9 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--exclude", dest="exclude", help="Exclude name prefix", required=False)
 
     args = parser.parse_args()
-    print("args:",args)
+    print("Arguments:")
+    for arg in vars(args):
+        print(f"  {arg}: {getattr(args, arg)}")
 
     client = api_client_factory.get_api_client(args.profile, args.file_client_base_dir)
     clusters = client.get_clusters()
