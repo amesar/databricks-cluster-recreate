@@ -2,7 +2,19 @@
 
 Where's my cluster gone? These scripts address the problem: how do I recreate my cluster? 
 
-Creates snapshots of a set of clusters configurations and their libraries. Using the Databricks REST API generates scripts to recreate the clusters.
+Using the Databricks REST API, this tool generates scripts to recreate your cluster(s) with their attached libraries.
+
+## Synopsis
+Create scripts
+```
+python cluster_snapshot_by_user.py --user doe@databricks.com
+```
+Recreate cluster
+```
+create_cluster.sh # outputs cluster ID
+install_libraries.sh $CLUSTER_ID
+```
+
 
 ## Setup
 
@@ -14,31 +26,40 @@ pip install --upgrade databricks-cli
 
 ## Overview
 
-The databricks-cluster-recreate scripts:
+### What the scripts do
 * Creates a directory for each cluster that matches the search criteria.
 * JSON spec files to create cluster and attach libraries.
 * Convenience shell scripts to recreate the cluster and attach its libraries. 
 * The scripts use the databricks CLI.
 
-Files in a [cluster directory](example):
-* [create_cluster.sh](example/create_cluster.sh) - script using databricks CLI to create the cluster
-* [cluster.json](example/cluster.json) - JSON spec used to create the cluster. Request for [clusters/create API endpoint](https://docs.databricks.com/api/latest/clusters.html#create).
-* [install_libraries.sh](example/install_libraries.sh) - script using databricks CLI to attach all libraries
-* [libraries.json](example/libraries.json) - Input libraries to HTTP API call (not used by install_libraries.sh)
+### Cluster recreate scripts 
+
+[Sample](example) cluster directory:
+```
+├── my_cluster
+│   ├── cluster.json
+│   ├── create_cluster.sh
+│   ├── from_api
+│   │   ├── cluster.json
+│   │   └── libraries.json
+│   ├── install_libraries.sh
+│   ├── libraries.json
+│   └── manifest.json
+└── manifest.json
+```
+
+File details:
+* [create_cluster.sh](example/create_cluster.sh) - script uses the Databricks CLI to create a new cluster
+  * [cluster.json](example/cluster.json) - JSON spec used to create the cluster. Request for [clusters/create](https://docs.databricks.com/api/latest/clusters.html#create) API endpoint.
+* [install_libraries.sh](example/install_libraries.sh) - script attaches all libraries to the cluster.
+  * [libraries.json](example/libraries.json) - Informational. Not used by the CLI-based tool. Apparently the CLI does not support batch library installs as does the [libraries/install](https://docs.databricks.com/dev-tools/api/latest/libraries.html#install) endpoint.
 * [from_api](example/from_api) - Original output from API get calls
   * [cluster.json](example/from_api/cluster.json) - response from [clusters/get](https://docs.databricks.com/api/latest/clusters.html#get) endpoint.
   * [libraries.json](example/from_api/libraries.json) - response from [libraries/cluster-status](https://docs.databricks.com/api/latest/libraries.html#cluster-status) endpoint.
 
-The option `use_cluster_id` determines whether directory names are cluster IDs or cluster names. The default is to use cluster names.
+### Cluster recreate scripts examples
 
-Since cluster names are not unique, when duplicate names occur the resulting directory name will have `__dup_{COUNT}` appended to it. For example, `cool_cluster__dup_01` and `cool_cluster__dup_02`.
-
-
-Note, that although you can apparently pass the response from cluster/get to cluster/create, the databricks-cluster-recreate databricks-cluster-recreate script extracts only those fields that are required by cluster/create from the much more verbose cluster/get payload.
-
-**Recreate Scripts**
-
-[create_cluster.sh](example/create_cluster.sh):
+[create_cluster.sh](example/create_cluster.sh)
 ```
 if [ $# -gt 0 ] ; then
   PROFILE="--profile $1"
@@ -62,7 +83,18 @@ databricks libraries install --cluster-id $cluster_id --maven-coordinates org.ml
 databricks libraries install --cluster-id $cluster_id --maven-coordinates ml.combust.mleap:mleap-spark_2.11:0.12.0 $PROFILE
 ```
 
-## Generate cluster recreate scripts
+### Run Options
+
+The option `use_cluster_id` determines whether directory names are cluster IDs or cluster names. The default is to use cluster names.
+
+Since cluster names are not unique, when duplicate names occur the resulting directory name will have `__dup_{COUNT}` appended to it. For example, `cool_cluster__dup_01` and `cool_cluster__dup_02`.
+
+Note, that although you can apparently pass the response from cluster/get to cluster/create, the recreate script extracts only those fields that are required by cluster/create from the much more verbose cluster/get payload.
+
+
+## Run 
+
+### Generate cluster recreate scripts
 
 There are three different ways to create recreate scripts. `By user` is the most common one.
 
@@ -90,7 +122,7 @@ python cluster_snapshot_all.py \
   --profile MY_PROFILE
 ```
 
-## Sample to recreate a cluster
+### Recreate the cluster
 
 ```
 cd out/my_cluster
