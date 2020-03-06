@@ -6,7 +6,7 @@ from cluster_directory_manager import ClusterDirectoryManager
 
 keys = ['cluster_name', 'spark_version', 'driver_node_type_id', 'node_type_id', 'num_workers', 'autotermination_minutes', 'spark_env_vars', 'spark_conf', 'init_scripts']
 
-class ClusterTransformer(object):
+class ClusterTransformer():
     def __init__(self, client, output_dir, use_cluster_id):
         self.client = client
         self.output_dir = output_dir

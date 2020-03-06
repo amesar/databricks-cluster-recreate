@@ -1,8 +1,14 @@
+from abc import abstractmethod, ABCMeta
 
-class ApiClient(object):
+class ApiClient(metaclass=ABCMeta):
 
+    @abstractmethod
     def _get_clusters(self):
-        raise NotImplementedError("Not implemented")
+        pass
+
+    @abstractmethod
+    def _get_cluster(self, cluster_id):
+        pass
 
     def get_clusters(self):
         return self._get_clusters()['clusters']

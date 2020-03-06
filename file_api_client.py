@@ -20,7 +20,7 @@ class FileApiClient(ApiClient):
     def raw_get_clusters(self):
         return self._read("clusters.json")
 
-    def get_cluster(self, cluster_id):
+    def _get_cluster(self, cluster_id):
         clusters = self.get_clusters()
         clusters = self.to_map(clusters)
         return clusters[cluster_id]

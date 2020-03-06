@@ -1,6 +1,6 @@
 import os 
 
-class ClusterDirectoryManager(object):
+class ClusterDirectoryManager():
     '''
     if using cluster by names, you might run into duplicates.
     We account for this by adding __dup_{count} to each duplicate cluster directory name.

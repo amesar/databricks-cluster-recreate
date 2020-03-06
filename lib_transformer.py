@@ -40,7 +40,6 @@ def create_path(output_dir, name, ext):
     #return  "{}_{}.{}".format(output_base,cluster_id,ext)
 
 def build_files(statuses, output_dir, output_dir2, cluster_id, which):
-
     if not 'library_statuses' in statuses:
         if verbose: print("INFO: No libraries in cluster {}".format(which))
         return

@@ -9,7 +9,7 @@ class HttpApiClient(ApiClient):
         print("Host:",host)
         self.db_api = api_client.ApiClient(None, None, host, token)
 
-    def get_cluster(self, cluster_id):
+    def _get_cluster(self, cluster_id):
         return self.db_api.perform_query("GET", "/clusters/get?cluster_id={}".format(cluster_id))
 
     def _get_clusters(self):

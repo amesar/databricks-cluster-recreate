@@ -1,7 +1,6 @@
 import api_client_factory
 import args_utils
 from cluster_transformer import ClusterTransformer
-from argparse import ArgumentParser
 
 if __name__ == "__main__":
     parser = args_utils.build_parser()
@@ -18,5 +17,3 @@ if __name__ == "__main__":
         transformer.process(cluster_id)
     transformer.finish()
     print("Processed {} clusters".format(len(cluster_ids)))
-
-
