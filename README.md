@@ -1,6 +1,6 @@
 # databricks-cluster-recreate
 
-Where's my cluster gone? These scripts address the problem: how do I recreate my cluster? 
+Where have all my clusters gone? These scripts address the problem: how do I recreate my suddenly departed clusters? 
 
 Using the Databricks REST API, this tool generates scripts to recreate your cluster(s) with their attached libraries.
 
