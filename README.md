@@ -108,14 +108,24 @@ Since cluster names are not unique, if you use `--use_cluster_id no`, when dupli
 For example, there could be two clusters named `cool_cluster`. 
 Therefore there will be two cluster directories called `cool_cluster__dup_01` and `cool_cluster__dup_02`.
 
-## Run 
 
-### Generate cluster recreate scripts
+## Run - Generate cluster recreate scripts
 
 There are several different ways to build recreate scripts by using different search criteria.
 `By user` is the most common one.
 
-By user - work off of `creator_user_name` JSON attribute
+### By User 
+
+Works off of the [creator_user_name](https://docs.databricks.com/dev-tools/api/latest/clusters.html#get) JSON attribute.
+
+Options:
+
+|Name | Required | Default | Description|
+|---|---|---|---|
+| user | yes | N/A | Databricks user name |
+| exclude | no | False | Exclude job clusters |
+
+Example:
 ```
 python cluster_snapshot_by_user.py \
   --user doe@databricks.com \
@@ -124,7 +134,15 @@ python cluster_snapshot_by_user.py \
   --exclude job
 ```
 
-By cluster IDs - comma-separated cluster IDs
+### By Cluster IDs
+
+Options:
+
+|Name | Required | Default | Description|
+|---|---|---|---|
+| cluster_ids | yes | N/A | comma-separated list of cluster IDs |
+
+Example:
 ```
 python cluster_snapshot_by_ids.py \
   --cluster_ids 1125-205205-racer181,1023-023159-prop147  \
@@ -132,14 +150,16 @@ python cluster_snapshot_by_ids.py \
   --profile MY_PROFILE
 ```
 
-All clusters
+### All clusters
+
+Could take a while though ;)
 ```
 python cluster_snapshot_all.py \
   --output_dir out \
   --profile MY_PROFILE
 ```
 
-### Recreate the cluster
+## Run - Recreate the cluster
 
 ```
 cd out/my_cluster
