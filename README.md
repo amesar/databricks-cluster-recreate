@@ -1,18 +1,17 @@
 # databricks-cluster-recreate
 
-Where have all my clusters gone? These scripts address the problem: how do I recreate my suddenly departed clusters? 
+Where have all my Databricks clusters gone? These scripts solve the problem: how do I recreate my suddenly departed clusters? 
 
-Using the Databricks REST API, this tool generates scripts to recreate your cluster(s) with their attached libraries.
+This tool generates scripts (using the Databricks CLI) that recreate your clusters along with their attached libraries.
 
 ## Synopsis
-Create scripts
+Create recreate scripts:
 ```
 python cluster_snapshot_by_user.py --user doe@databricks.com
 ```
-Recreate cluster
+Recreate cluster:
 ```
-create_cluster.sh # outputs cluster ID
-install_libraries.sh $CLUSTER_ID
+create_cluster.sh
 ```
 
 
@@ -28,38 +27,50 @@ pip install --upgrade databricks-cli
 
 ### What the scripts do
 * Creates a directory for each cluster that matches the search criteria.
-* JSON spec files to create cluster and attach libraries.
+* Creates a JSON spec file to create cluster 
 * Convenience shell scripts to recreate the cluster and attach its libraries. 
-* The scripts use the databricks CLI.
+* The scripts use the Databricks CLI.
 
 ### Cluster recreate scripts 
 
-[Sample](example) cluster directory:
+[Sample](example) directory with recreate scripts:
 ```
 ├── my_cluster
+│   ├── _create_cluster.sh
+│   ├── _install_libraries.sh
 │   ├── cluster.json
 │   ├── create_cluster.sh
 │   ├── from_api
 │   │   ├── cluster.json
 │   │   └── libraries.json
-│   ├── install_libraries.sh
 │   ├── libraries.json
 │   └── manifest.json
 └── manifest.json
 ```
 
 File details:
-* [create_cluster.sh](example/create_cluster.sh) - script uses the Databricks CLI to create a new cluster
+* [create_cluster.sh](example/create_cluster.sh) - Calls _create_cluster.sh and _install_libraries.sh.
+* [_create_cluster.sh](example/_create_cluster.sh) - Creates a new cluster.
   * [cluster.json](example/cluster.json) - JSON spec used to create the cluster. Request for [clusters/create](https://docs.databricks.com/api/latest/clusters.html#create) API endpoint.
-* [install_libraries.sh](example/install_libraries.sh) - script attaches all libraries to the cluster.
+* [_install_libraries.sh](example/_install_libraries.sh) - Attaches all libraries to the cluster.
   * [libraries.json](example/libraries.json) - Informational. Not used by the CLI-based tool. Apparently the CLI does not support batch library installs as does the [libraries/install](https://docs.databricks.com/dev-tools/api/latest/libraries.html#install) endpoint.
 * [from_api](example/from_api) - Original output from API get calls
-  * [cluster.json](example/from_api/cluster.json) - response from [clusters/get](https://docs.databricks.com/api/latest/clusters.html#get) endpoint.
-  * [libraries.json](example/from_api/libraries.json) - response from [libraries/cluster-status](https://docs.databricks.com/api/latest/libraries.html#cluster-status) endpoint.
+  * [cluster.json](example/from_api/cluster.json) - Response from the [clusters/get](https://docs.databricks.com/api/latest/clusters.html#get) endpoint.
+  * [libraries.json](example/from_api/libraries.json) - Response from the [libraries/cluster-status](https://docs.databricks.com/api/latest/libraries.html#cluster-status) endpoint.
 
 ### Cluster recreate scripts examples
 
 [create_cluster.sh](example/create_cluster.sh)
+```
+_create_cluster.sh > cluster_id.json
+sleep 5 # wait for cluster to be created
+cluster_id=`grep cluster_id cluster_id.json | sed -e 's/"//g' -e 's/cluster_id://' -e 's/ //g'` 
+echo CLUSTER_ID: $cluster_id
+PROFILE=$1
+_install_libraries.sh $cluster_id $PROFILE
+```
+
+[_create_cluster.sh](example/_create_cluster.sh)
 ```
 if [ $# -gt 0 ] ; then
   PROFILE="--profile $1"
@@ -67,7 +78,7 @@ fi
 databricks clusters create --json-file cluster.json $PROFILE
 ```
 
-[install_libraries.sh](example/install_libraries.sh)
+[_install_libraries.sh](example/_install_libraries.sh)
 ```
 if [ $# -eq 0 ] ; then
   echo ERROR: Missing CLUSTER_ID
@@ -83,22 +94,28 @@ databricks libraries install --cluster-id $cluster_id --maven-coordinates org.ml
 databricks libraries install --cluster-id $cluster_id --maven-coordinates ml.combust.mleap:mleap-spark_2.11:0.12.0 $PROFILE
 ```
 
-### Run Options
+### Common Run Options
 
-The option `use_cluster_id` determines whether directory names are cluster IDs or cluster names. The default is to use cluster names.
+|Name | Required | Default | Description|
+|---|---|---|---|
+| profile | no | none | From `~/.databricks.cfg`  |
+| output_dir | no | . | Output folder for recreate scripts  |
+| use_cluster_id | no | False | Use cluster ID or cluster name for the folder to contain a cluster's recreate scripts  |
 
-Since cluster names are not unique, when duplicate names occur the resulting directory name will have `__dup_{COUNT}` appended to it. For example, `cool_cluster__dup_01` and `cool_cluster__dup_02`.
 
-Note, that although you can apparently pass the response from cluster/get to cluster/create, the recreate script extracts only those fields that are required by cluster/create from the much more verbose cluster/get payload.
 
+Since cluster names are not unique, if you use `--use_cluster_id no`, when duplicate names occur the resulting directory names will have `__dup_{COUNT}` appended to them. 
+For example, there could be two clusters named `cool_cluster`. 
+Therefore there will be two cluster directories called `cool_cluster__dup_01` and `cool_cluster__dup_02`.
 
 ## Run 
 
 ### Generate cluster recreate scripts
 
-There are three different ways to create recreate scripts. `By user` is the most common one.
+There are several different ways to build recreate scripts by using different search criteria.
+`By user` is the most common one.
 
-By user (i.e. `creator_user_name` JSON attribute)
+By user - work off of `creator_user_name` JSON attribute
 ```
 python cluster_snapshot_by_user.py \
   --user doe@databricks.com \
@@ -107,7 +124,7 @@ python cluster_snapshot_by_user.py \
   --exclude job
 ```
 
-By cluster IDs (comma-separated cluster IDs)
+By cluster IDs - comma-separated cluster IDs
 ```
 python cluster_snapshot_by_ids.py \
   --cluster_ids 1125-205205-racer181,1023-023159-prop147  \
@@ -126,6 +143,8 @@ python cluster_snapshot_all.py \
 
 ```
 cd out/my_cluster
-create_cluster.sh # outputs cluster ID
-install_libraries.sh $CLUSTER_ID # attach libraries to cluster.
+create_cluster.sh 
+```
+```
+CLUSTER_ID: 0306-234717-muss25
 ```
